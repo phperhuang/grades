@@ -11,7 +11,7 @@ class RegisterController extends Controller
 
     public function register()
     {
-
+        echo '123';
     }
 
     public function registerResult()
