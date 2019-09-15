@@ -257,7 +257,7 @@ class UserController extends Controller
         //生成的文档为Word2007
         $writer = \PHPWord_IOFactory::createWriter($phpword, 'Word2007');
 
-        $writer->save($fileName . "." . $postfix);
+        $writer->save($fileName . $postfix);
 
     }
 
