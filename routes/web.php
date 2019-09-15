@@ -41,7 +41,43 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('add_test_describe', 'User\UserController@addTestDescribe');
     Route::post('add_test_describe_result', 'User\UserController@addTestDescribeResult');
 
+    // 生成周测题目路由
+    Route::get('test_index', 'User\UserController@testIndex');
+    Route::get('create_test', 'User\UserController@exportWord');
+
     Route::get('sessions', function () {
         var_dump(session()->all());
     });
+});
+
+Route::get('sort', function (){
+    function order($arr){
+        $count = count($arr);
+        $temp = 0;
+        for($i=0; $i<$count-1; $i++){
+            for ($j=0; $j< $count-1-$i; $j++){
+                if($arr[$j] > $arr[$j+1]){
+                    $temp = $arr[$j];
+                    $arr[$j] = $arr[$j+1];
+                    $arr[$j+1] = $temp;
+                }
+            }
+        }
+        return $arr;
+    }
+
+
+    $arr= array(6,3,8,2,9,1);
+    $res =  order($arr);
+    print_r($res);
+});
+
+Route::get('get_token', function (){
+//    echo base64_encode('hxLzkk20150707');
+    $str = 'hxlzkk20150707by';
+//    $str = 'aHhMemtrMjAxNTA3MDc=';
+    echo $en_str = base64_encode($str);
+    echo "<br>";
+    echo $de_str = base64_decode($en_str);
+//    echo md5($en_str);
 });

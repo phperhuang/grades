@@ -1,10 +1,7 @@
 
-console.log(echarts)
-
 function postAjax(url, prams, dom) {
     $.post(url, prams, function (data) {
         var html = '';
-        // var i;
         var classArr =  new Array();
         var chineseArr =  new Array();
         var mathArr =  new Array();
@@ -13,6 +10,8 @@ function postAjax(url, prams, dom) {
         var historyArr =  new Array();
         var biologyArr =  new Array();
         var geographyArr =  new Array();
+        var sortArr = new Array();
+        var allArr = new Array();
         if(data.length != 0){
             $.each(data, function (index, value) {
                 html += addHtml(value);
@@ -26,20 +25,34 @@ function postAjax(url, prams, dom) {
                 geographyArr.push(value.geography);
             });
             dom.html(html);
-            // let tr_length = dom.find('tr').length;
-            // let td_length = (dom.find('td').length / tr_length);
-            // console.log(chineseArr);
-            // console.log(chineseArr.sort());
-            // console.log(chineseArr[+(chineseArr.length - 1)]);
+            let tr_length = dom.find('tr').length;
+            let td_length = (dom.find('td').length / tr_length) - 1;
+
+            for (let i = 1; i <= td_length; i++){
+                for (let j = 0; j < tr_length; j++){
+                    sortArr.push(dom.find('tr').eq(j).find('td').eq(i).text());
+                }
+                allArr.push(sortArr);
+                sortArr.empty();
+                console.log(sortArr);
+            }
+            sortArr = sortArr.sort();
+            // console.log(sortArr);
+
+            for (let i = 1; i <= td_length; i++){
+                for (let j = 0; j < tr_length; j++){
+                    let old_text = dom.find('tr').eq(j).find('td').eq(i).text();
+                    dom.find('tr').eq(j).find('td').eq(i).text(old_text + 123);
+                }
+            }
 
             var myChart = echarts.init(document.getElementById('grades'));
-
             // 指定图表的配置项和数据
             var option = {
                 title: {text: '各科成绩排行'},
                 tooltip: {},
                 legend: {
-                    data:['语文分数']
+                    // data:['语文分数']
                 },
                 xAxis: {
                     type: 'category',
@@ -76,7 +89,6 @@ function postAjax(url, prams, dom) {
                     data: geographyArr
                 }]
             };
-
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(option);
 
@@ -84,7 +96,6 @@ function postAjax(url, prams, dom) {
             layer.alert('暂时没有记录');
         }
 
-        // console.log(td_length);
     });
 }
 

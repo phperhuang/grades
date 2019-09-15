@@ -65,6 +65,9 @@
                 <li class="layui-nav-item">
                     <a href="{{ url('user/test_describe_list') }}"><i class="layui-icon" data-icon=""></i><cite>考试列表</cite></a>
                 </li>
+                <li class="layui-nav-item">
+                    <a href="{{ url('user/test_index') }}"><i class="layui-icon" data-icon=""></i><cite>生成周测</cite></a>
+                </li>
                 {{-- test_describe_list --}}
             </ul>
         </div>

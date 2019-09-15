@@ -3,9 +3,6 @@
 @section('content')
     <script src="{{ url('js/echarts.js') }}"></script>
 {{--    <script src="{{ url('js/echarts-gl.min.js') }}"></script>--}}
-    <script type="text/javascript">
-        // console.log(echarts);
-    </script>
 
     <div class="layui-form-item">
         <label class="layui-form-label">选择考试</label>
@@ -38,26 +35,6 @@
         </tr>
         </thead>
         <tbody>
-        {{--<tr>--}}
-            {{--<td>1804</td>--}}
-            {{--<td>100</td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-        {{--</tr>--}}
-        {{--<tr>--}}
-            {{--<td>1805</td>--}}
-            {{--<td>60</td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-            {{--<td></td>--}}
-        {{--</tr>--}}
         </tbody>
     </table>
         <div id="grades" style="width: 1200px;height:400px; display: none;"></div>
@@ -65,7 +42,6 @@
     <script src="{{ url('js/common.js') }}"></script>
     <script type="text/javascript">
         $(function () {
-            // console.log(echarts)
             layui.use('form', function() {
                 var form = layui.form;
                 form.on('select(describe)', function(data){
@@ -77,6 +53,7 @@
                     postAjax("{{ url('user/show_grades') }}", prams, $('table tbody'));
                 });
             });
+
         });
 
     </script>
