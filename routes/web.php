@@ -43,6 +43,8 @@ Route::group(['prefix' => 'user'], function () {
 
     // 生成周测题目路由
     Route::get('test_index', 'User\UserController@testIndex');
+//    Route::get('create_test', 'User\UserController@exportWord');
+//    Route::get('create_a_test', 'User\UserController@exportNewWord');
     Route::get('create_test', 'User\UserController@exportWord');
 
     Route::get('sessions', function () {
