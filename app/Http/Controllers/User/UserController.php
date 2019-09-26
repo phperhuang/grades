@@ -32,6 +32,7 @@ class UserController extends Controller
         return view('user/index/entering_grades', ['tests' => $tests, 'class_nos' => $class_nos, 'data' => 23]);
     }
 
+    //
     public function showGrades(Request $request)
     {
         if($request->getMethod() == 'POST'){

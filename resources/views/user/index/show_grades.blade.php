@@ -1,6 +1,15 @@
 @extends('.common.index')
 
 @section('content')
+    <style type="text/css">
+        .num, .paiming {
+            float: right;
+        }
+        .num {
+            margin-right: 25px;
+        }
+    </style>
+
     <script src="{{ url('js/echarts.js') }}"></script>
 {{--    <script src="{{ url('js/echarts-gl.min.js') }}"></script>--}}
 
@@ -25,13 +34,13 @@
         <thead>
         <tr>
             <th>班级</th>
-            <th>语文</th>
-            <th>数学</th>
-            <th>英语</th>
-            <th>政治</th>
-            <th>历史</th>
-            <th>地理</th>
-            <th>生物</th>
+            <th>语文<span class="paiming">年级排名</span></th>
+            <th>数学<span class="paiming">年级排名</span></th>
+            <th>英语<span class="paiming">年级排名</span></th>
+            <th>政治<span class="paiming">年级排名</span></th>
+            <th>历史<span class="paiming">年级排名</span></th>
+            <th>地理<span class="paiming">年级排名</span></th>
+            <th>生物<span class="paiming">年级排名</span></th>
         </tr>
         </thead>
         <tbody>
