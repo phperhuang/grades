@@ -3,7 +3,7 @@
 @section('content')
     <script type="text/javascript" src="{{ url('css/layui/layui.js') }}"></script>
 
-    <form class="layui-form" action="{{ url('user/enter_grades_result') }}" method="post" enctype="multipart/form-data">
+    <form class="layui-form" action="{{ url('user/enter_grades_result') }}" method="post">
         <input type="hidden" value="{{ csrf_token() }}" name="_token">
         <div class="layui-form-item">
             <label class="layui-form-label">选择班级</label>
@@ -86,15 +86,13 @@
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                <div class="layui-upload" style="display: inline;">
-                    <button type="button" class="layui-btn layui-btn-normal" id="choose_file">选择文件</button>
-                    <button type="button" class="layui-btn" id="upload_file">开始上传</button>
-                </div>
             </div>
         </div>
-
-
-
+    </form>
+    <form style="margin-left: 110px;" action="{{ url('user/upload_excel_class') }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input class="layui-btn" type="file" name="upload_file">
+        <button type="submit" class="layui-btn" id="upload_file">开始上传</button>
     </form>
 
     <script>
@@ -102,22 +100,6 @@
         $(function () {
             layui.use("layer",function(){
             });
-
-            layui.use('upload', function() {
-                var $ = layui.jquery
-                    , upload = layui.upload;
-                upload.render({
-                    elem: '#choose_file'
-                    ,url: "{{url('user/upload_xcel_class')}}"
-                    ,auto: false
-                    //,multiple: true
-                    ,bindAction: '#upload_file'
-                    ,done: function(res){
-                        console.log(res)
-                    }
-                });
-            });
-
         });
     </script>
 @endsection

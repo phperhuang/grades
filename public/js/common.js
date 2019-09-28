@@ -118,6 +118,8 @@ function getNum(obj) {
     var historyArr =  new Array();
     var biologyArr =  new Array();
     var geographyArr =  new Array();
+    var chemicalArr =  new Array();
+    var physicalArr =  new Array();
     for(let j = 0; j < obj.length; j++){
         chineseArr.push(obj[j]['chinese']);
         mathArr.push(obj[j]['math']);
@@ -126,6 +128,8 @@ function getNum(obj) {
         historyArr.push(obj[j]['history']);
         biologyArr.push(obj[j]['biology']);
         geographyArr.push(obj[j]['geography']);
+        chemicalArr.push(obj[j]['chemical']);
+        physicalArr.push(obj[j]['physical']);
     }
     chineseArr.sort(function (a,b) {return b - a;});
     mathArr.sort(function (a,b) {return b - a;});
@@ -142,6 +146,8 @@ function getNum(obj) {
             "<td>"+ obj[i]['political'] + "<span class='num'>" + (contains(politicalArr, obj[i]['political']) + 1) +"</span></td>" +
             "<td>"+ obj[i]['history'] + "<span class='num'>" + (contains(historyArr, obj[i]['history']) + 1) +"</span></td>" +
             "<td>"+ obj[i]['biology'] + "<span class='num'>" + (contains(biologyArr, obj[i]['biology']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['chemical'] + "<span class='num'>" + (contains(biologyArr, obj[i]['chemical']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['physical'] + "<span class='num'>" + (contains(biologyArr, obj[i]['physical']) + 1) +"</span></td>" +
             "<td>"+ obj[i]['geography'] + "<span class='num'>" + (contains(geographyArr, obj[i]['geography']) + 1) +"</span></td></tr>";
     }
     return html;

@@ -35,7 +35,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('add_classinfo', 'User\UserController@addClassInfo');
     Route::post('add_classinfo_result', 'User\UserController@addClassInfoResult');
     Route::get('class_list', 'User\UserController@classList');
-    Route::get('upload_xcel_class', 'User\UserController@uploadExcelClass');
+    Route::post('upload_excel_class', 'User\UserController@uploadExcelClass');
 
     // 考试描述路由
     Route::get('test_describe_list', 'User\UserController@testDescribeList');

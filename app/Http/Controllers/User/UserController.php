@@ -7,7 +7,22 @@ use App\Subject;
 use App\TestDescribe;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\Common\Autoloader;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+// 新引入
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 //use phpword;
 
@@ -128,9 +143,105 @@ class UserController extends Controller
     }
 
     // 导入excel 文件，直接生成班级信息
-    public function uploadExcelClass(Request $request)
+    public function uploadExcelClass(Request $request, $options = [])
     {
-        $excelFile = $request->input('');
+        $excelFile = $request->file('upload_file');
+        $objRead = IOFactory::createReader('Xlsx');
+
+        if(!$objRead->canRead($excelFile)){
+            $objRead = IOFactory::createReader('Xls');
+            if(!$objRead->canRead($excelFile)){
+                return "只支持导入.xlsx 和 .xls 格式的 excel 文件";
+            }
+        }
+
+        $objRead->setReadDataOnly(true);
+        $excel = $objRead->load($excelFile);
+        $currSheet = $excel->getSheet(0);
+
+        $columnCnt = 0;
+        if (0 == $columnCnt) {
+            /* 取得最大的列号 */
+            $columnH = $currSheet->getHighestColumn();
+            /* 兼容原逻辑，循环时使用的是小于等于 */
+            $columnCnt = Coordinate::columnIndexFromString($columnH);
+        }
+
+        $rowCnt = $currSheet->getHighestRow();
+        $data   = [];
+        /* 读取内容 */
+        for ($_row = 1; $_row <= $rowCnt; $_row++) {
+            $isNull = true;
+
+            for ($_column = 1; $_column <= $columnCnt; $_column++) {
+                $cellName = Coordinate::stringFromColumnIndex($_column);
+                $cellId   = $cellName . $_row;
+                $cell     = $currSheet->getCell($cellId);
+
+                if (isset($options['format'])) {
+                    /* 获取格式 */
+                    $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+                    /* 记录格式 */
+                    $options['format'][$_row][$cellName] = $format;
+                }
+
+                if (isset($options['formula'])) {
+                    /* 获取公式，公式均为=号开头数据 */
+                    $formula = $currSheet->getCell($cellId)->getValue();
+
+                    if (0 === strpos($formula, '=')) {
+                        $options['formula'][$cellName . $_row] = $formula;
+                    }
+                }
+
+                if (isset($format) && 'm/d/yyyy' == $format) {
+                    /* 日期格式翻转处理 */
+                    $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
+                }
+
+                $data[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
+
+                if (!empty($data[$_row][$cellName])) {
+                    $isNull = false;
+                }
+            }
+
+            /* 判断是否整行数据为空，是的话删除该行数据 */
+            if ($isNull) {
+                unset($data[$_row]);
+            }
+        }
+
+        // 1、先将考试描述存入到数据库，并获取到其 id ;
+//        var_dump($data[2]['B']);
+        $describe = ['describe' => $data[2]['A'], 'test_date' => $data[2]['B']];
+        $id = DB::table('test_describes')->insertGetId($describe);
+
+//        echo count($data);
+//        exit;
+//        $increId = 10;
+        // 2、将每个班的成绩，依次录入数据库;
+        for ($i = 2;$i <= count($data); $i++){
+            $gradesData = [
+                'class' => $data[$i]['C'],
+                'chinese' => $data[$i]['D'],
+                'math' => $data[$i]['E'],
+                'english' => $data[$i]['F'],
+                'political' => $data[$i]['G'],
+                'history' => $data[$i]['H'],
+                'biology' => $data[$i]['I'],
+                'geography' => $data[$i]['J'],
+                'physical' => $data[$i]['K'],
+                'chemical' => $data[$i]['L'],
+                'describe_id' => $id,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ];
+            DB::table('subjects')->insertGetId($gradesData);
+        }
+//        echo "<script>layer.alert('成绩添加成功！');</script>";
+//        sleep(2);
+        return redirect(url("user/show_grades"));
     }
 
     /*
