@@ -13,7 +13,8 @@
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
         "phpoffice/phpword": "^0.16.0",
-        "phpword/phpword": "dev-master"
+        "phpword/phpword": "dev-master",
+        "phpoffice/phpspreadsheet": "1.8.2"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

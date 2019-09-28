@@ -127,6 +127,12 @@ class UserController extends Controller
         }
     }
 
+    // 导入excel 文件，直接生成班级信息
+    public function uploadExcelClass(Request $request)
+    {
+        $excelFile = $request->input('');
+    }
+
     /*
      * 生成周测题目
      * */
