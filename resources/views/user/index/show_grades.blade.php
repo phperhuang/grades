@@ -37,12 +37,12 @@
             <th>语文<span class="paiming">年级排名</span></th>
             <th>数学<span class="paiming">年级排名</span></th>
             <th>英语<span class="paiming">年级排名</span></th>
+            <th>物理<span class="paiming">年级排名</span></th>
             <th>政治<span class="paiming">年级排名</span></th>
             <th>历史<span class="paiming">年级排名</span></th>
             <th>地理<span class="paiming">年级排名</span></th>
-            <th>物理<span class="paiming">年级排名</span></th>
-            <th>化学<span class="paiming">年级排名</span></th>
             <th>生物<span class="paiming">年级排名</span></th>
+            <th>化学<span class="paiming">年级排名</span></th>
         </tr>
         </thead>
         <tbody>
