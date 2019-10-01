@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22fecb44-221b-4af6-9982-2fc7d578bc97" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/public/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +27,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/common.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="793">
-              <caret line="144" column="103" selection-start-line="144" selection-start-column="103" selection-end-line="144" selection-end-column="103" />
+            <state relative-caret-position="475">
+              <caret line="112" column="33" lean-forward="true" selection-start-line="112" selection-start-column="33" selection-end-line="112" selection-end-column="33" />
+              <folding>
+                <element signature="e#192#209#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -472,12 +475,12 @@
       <workItem from="1569499531309" duration="6077000" />
       <workItem from="1569587880890" duration="626000" />
       <workItem from="1569632646254" duration="19035000" />
-      <workItem from="1569907927952" duration="2696000" />
+      <workItem from="1569907927952" duration="3786000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="139786000" />
+    <option name="totallyTimeSpent" value="140876000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -859,8 +862,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/common.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="793">
-          <caret line="144" column="103" selection-start-line="144" selection-start-column="103" selection-end-line="144" selection-end-column="103" />
+        <state relative-caret-position="475">
+          <caret line="112" column="33" lean-forward="true" selection-start-line="112" selection-start-column="33" selection-end-line="112" selection-end-column="33" />
+          <folding>
+            <element signature="e#192#209#0" />
+          </folding>
         </state>
       </provider>
     </entry>
