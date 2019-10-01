@@ -214,7 +214,8 @@ class UserController extends Controller
 
         // 1、先将考试描述存入到数据库，并获取到其 id ;
 //        var_dump($data[2]['B']);
-        $describe = ['describe' => $data[2]['A'], 'test_date' => $data[2]['B']];
+        $describe = ['describe' => $data[2]['A'], 'test_date' => $data[2]['B'],
+            'created_at' => date("Y-m-d H:i:s"), 'updated_at' => date("Y-m-d H:i:s")];
         $id = DB::table('test_describes')->insertGetId($describe);
 
 //        echo count($data);

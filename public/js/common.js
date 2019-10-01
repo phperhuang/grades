@@ -2,7 +2,7 @@
 function postAjax(url, prams, dom) {
     $.post(url, prams, function (data) {
         html = getNum(data);
-        // console.log(html);
+        console.log(html);
         dom.html(html);
         return false;
         // var html = '';
