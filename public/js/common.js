@@ -102,12 +102,6 @@ function postAjax(url, prams, dom) {
 
     });
 }
-//
-//
-// function addHtml(value) {
-//     return "<tr><td>"+ value.class +"</td><td>"+ value.chinese +"</td><td>"+ value.math +"</td><td>"+ value.english +"</td>" +
-//         "<td>"+ value.political +"</td><td>"+ value.history +"</td><td>"+ value.biology +"</td><td>"+ value.geography +"</td></tr>";
-// }
 
 function getNum(obj) {
     var html = '';
@@ -143,16 +137,13 @@ function getNum(obj) {
             "<td>"+ obj[i]['chinese'] + "<span class='num'>" + (contains(chineseArr, obj[i]['chinese']) + 1) +"</span></td>" +
             "<td>"+ obj[i]['math'] + "<span class='num'>" + (contains(mathArr, obj[i]['math']) + 1) +"</span></td>" +
             "<td>"+ obj[i]['english'] + "<span class='num'>" + (contains(englishArr, obj[i]['english']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['chemical'] + "<span class='num'>" + (contains(chemicalArr, obj[i]['political']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['political'] + "<span class='num'>" + (contains(politicalArr, obj[i]['history']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['history'] + "<span class='num'>" + (contains(historyArr, obj[i]['biology']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['geography'] + "<span class='num'>" + (contains(geographyArr, obj[i]['chemical']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['biology'] + "<span class='num'>" + (contains(biologyArr, obj[i]['physical']) + 1) +"</span></td>" +
-            "<td>"+ obj[i]['physical'] + "<span class='num'>" + (contains(physicalArr, obj[i]['geography']) + 1) +"</span></td></tr>";
+            "<td>"+ obj[i]['chemical'] + "<span class='num'>" + (contains(chemicalArr, obj[i]['chemical']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['political'] + "<span class='num'>" + (contains(politicalArr, obj[i]['political']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['history'] + "<span class='num'>" + (contains(historyArr, obj[i]['history']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['geography'] + "<span class='num'>" + (contains(geographyArr, obj[i]['geography']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['biology'] + "<span class='num'>" + (contains(biologyArr, obj[i]['biology']) + 1) +"</span></td>" +
+            "<td>"+ obj[i]['physical'] + "<span class='num'>" + (contains(physicalArr, obj[i]['physical']) + 1) +"</span></td></tr>";
     }
-
-
-
     return html;
 }
 
