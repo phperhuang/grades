@@ -47,6 +47,9 @@ Route::group(['prefix' => 'user'], function () {
 //    Route::get('create_test', 'User\UserController@exportWord');
 //    Route::get('create_a_test', 'User\UserController@exportNewWord');
     Route::get('create_test', 'User\UserController@exportWord');
+    // 家长会签到路由
+    Route::get('parents_sign', 'User\UserController@parentsSignIndex');
+    Route::post('parents_sign', 'User\UserController@parentsSign');
 
     Route::get('sessions', function () {
         var_dump(session()->all());
