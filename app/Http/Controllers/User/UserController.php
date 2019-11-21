@@ -460,6 +460,11 @@ class UserController extends Controller
         
 
     }
+    
+    public function parentsSign()
+    {
+        return view('user/parents_sign/sign_index');
+    }
 
 
 }
