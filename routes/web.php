@@ -54,6 +54,11 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('sessions', function () {
         var_dump(session()->all());
     });
+
+    // 学生成绩
+    Route::get('stu_grade', 'User\UserController@stuGrade');
+
+
 });
 
 Route::get('sort', function (){

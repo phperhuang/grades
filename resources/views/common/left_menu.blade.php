@@ -72,6 +72,11 @@
                 <li class="layui-nav-item">
                     <a href="{{ url('user/parents_sign') }}"><i class="layui-icon" data-icon=""></i><cite>家长会签到</cite></a>
                 </li>
+
+                <li class="layui-nav-item">
+                    <a href="{{ url('user/stu_grade') }}"><i class="layui-icon" data-icon=""></i><cite>学生成绩</cite></a>
+                </li>
+
             </ul>
         </div>
     </div>
