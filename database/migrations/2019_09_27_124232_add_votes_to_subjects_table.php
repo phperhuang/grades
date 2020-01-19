@@ -15,8 +15,13 @@ class AddVotesToSubjectsTable extends Migration
     {
         Schema::table('subjects', function (Blueprint $table) {
             //
-            $table->double('physical');             // 物理
-            $table->double('chemical');             // 化学
+            if (!Schema::hasColumn('subjects', 'physical')){
+                $table->double('physical');             // 物理
+            }
+            if(!Schema::hasColumn('subjects', 'chemical')){
+                $table->double('chemical');             // 化学
+            }
+
         });
     }
 
