@@ -12,13 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-
-Route::get('user', function () {
+//    redirect('user/login');
+//    return view('welcome');
     echo 123;
 });
+
 
 Route::group(['prefix' => 'user'], function () {
     Route::get('login', "User\LoginController@login");
@@ -57,6 +55,9 @@ Route::group(['prefix' => 'user'], function () {
 
     // 学生成绩
     Route::get('stu_grade', 'User\UserController@stuGrade');
+    Route::post('upload_excel_stu_grades', 'User\UserController@uploadExcelStuGrades');
+    Route::post('get_ten_students', 'User\UserController@getTenStudents');
+    Route::post('get_student_grades', 'User\UserController@getStudentGrades');
 
 
 });

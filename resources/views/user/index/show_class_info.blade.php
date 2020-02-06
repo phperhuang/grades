@@ -1,8 +1,7 @@
 @extends('.common.index')
 
 @section('content')
-    <a href="{{ url('user/add_classinfo') }}"><button class="layui-btn layui-btn-primary">添加班级</button></a>
-    <table class="layui-table">
+    <table class="table table-hover">
     <colgroup>
     <col width="150">
     <col width="200">
@@ -23,5 +22,5 @@
     @endforeach
     </tbody>
     </table>
-
+    <a href="{{ url('user/add_classinfo') }}"><button style="margin-left: 5px;" class="btn btn-primary">添加班级</button></a>
 @endsection

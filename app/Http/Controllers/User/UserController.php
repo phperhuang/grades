@@ -477,14 +477,30 @@ class UserController extends Controller
     // 学生成绩
     public function stuGrade()
     {
-        $classInfo = json_decode(json_encode(DB::table('class_info')->get('class_no', 'id')));
-        return view('user/stu_grade/index', ['class_info' => $classInfo]);
+//        $classInfo = json_decode(json_encode(DB::table('class_info')->get('class_no')));
+        $classInfo = DB::table('class_info')->get('class_no');
+        $test_describe = DB::table('test_describes')->get('describe');
+        $student_grades = DB::table('students')->where('class', '1804')->get();
+        $class_arr = [];
+        $describe_arr = [];
+        foreach ($classInfo as $value) {
+            array_push($class_arr, $value->class_no);
+        }
+        foreach ($test_describe as $describe) {
+            array_push($describe_arr, $describe->describe);
+        }
+        return view('user/stu_grade/index', ['class_info' => $class_arr, 'test_describe' => $describe_arr,
+            'students_grades' => $student_grades]);
     }
 
     // 导入学生成绩
     public function uploadExcelStuGrades(Request $request, $options = [])
     {
+        set_time_limit(0);
+        $class_no = $request->input('class_no');
+        $describe = $request->input('describe');
         $excelFile = $request->file('upload_file');
+        $level = $request->input('level');
         $objRead = IOFactory::createReader('Xlsx');
 
         if(!$objRead->canRead($excelFile)){
@@ -509,7 +525,7 @@ class UserController extends Controller
         $rowCnt = $currSheet->getHighestRow();
         $data   = [];
         /* 读取内容 */
-        for ($_row = 1; $_row <= $rowCnt; $_row++) {
+        for ($_row = 3; $_row <= $rowCnt; $_row++) {
             $isNull = true;
 
             for ($_column = 1; $_column <= $columnCnt; $_column++) {
@@ -551,37 +567,64 @@ class UserController extends Controller
             }
         }
 
-        // 1、先将考试描述存入到数据库，并获取到其 id ;
-//        var_dump($data[2]['B']);
-        $describe = ['describe' => $data[2]['A'], 'test_date' => $data[2]['B'],
-            'created_at' => date("Y-m-d H:i:s"), 'updated_at' => date("Y-m-d H:i:s")];
-        $id = DB::table('test_describes')->insertGetId($describe);
-
-//        echo count($data);
-//        exit;
-//        $increId = 10;
         // 2、将每个班的成绩，依次录入数据库;
-        for ($i = 2;$i <= count($data); $i++){
+        for ($i = 3;$i <= count($data); $i++){
             $gradesData = [
-                'class' => $data[$i]['C'],
+                'class' => $class_no,
+                'exam_no' => $data[$i]['B'],
+                'stu_name' => $data[$i]['C'],
                 'chinese' => $data[$i]['D'],
                 'math' => $data[$i]['E'],
                 'english' => $data[$i]['F'],
-                'chemical' => $data[$i]['G'],
-                'political' => $data[$i]['H'],
-                'history' => $data[$i]['I'],
-                'geography' => $data[$i]['J'],
-                'biology' => $data[$i]['K'],
-                'physical' => $data[$i]['L'],
-                'describe_id' => $id,
+                'political' => $data[$i]['G'],              // 政治
+                'history' => $data[$i]['H'],
+                'describe' => $describe,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
+                'total_points' => $data[$i]['I'],
+                'class_ranking' => $data[$i]['K'],
+                'grade_ranking' => $data[$i]['J'],
             ];
-            DB::table('subjects')->insertGetId($gradesData);
+            if($level == 2){
+                $gradesData['geography'] = $data[$i]['L'];
+                $gradesData['biology'] = $data[$i]['M'];
+                $gradesData['chemical'] = $data[$i]['N'];
+                $gradesData['physical'] = 0;
+            }else if($level == 3){
+                $gradesData['chemical'] = $data[$i]['L'];
+                $gradesData['physical'] = $data[$i]['M'];
+                $gradesData['geography'] = 0;
+                $gradesData['biology'] = 0;
+            }else{
+                $gradesData['geography'] = $data[$i]['L'];
+                $gradesData['biology'] = $data[$i]['M'];
+                $gradesData['chemical'] = 0;
+                $gradesData['physical'] = 0;
+            }
+            DB::table('students')->insertGetId($gradesData);
         }
-//        echo "<script>layer.alert('成绩添加成功！');</script>";
-//        sleep(2);
-        return redirect(url("user/show_grades"));
+        return redirect(url("user/stu_grade"));
+    }
+
+    public function getTenStudents(Request $request)
+    {
+        $value = $request->except('_token');
+        $ten_students = DB::table('students')->where('class', $value['class_no'])
+            ->orderBy($value['subject'], 'desc')->limit(10)->select('stu_name', $value['subject'])->get();
+        return $ten_students;
+    }
+
+    public function getStudentGrades(Request $request)
+    {
+        $value = $request->except('_token');
+        $show_grades = DB::table('students')->where('class', $value['class_no'])
+            ->where('describe', $value['test_describe'])->orderBy('grade_ranking')->get();
+        return $show_grades;
+    }
+
+    public function getStudentAllGrades(Request $request)
+    {
+
     }
 
 

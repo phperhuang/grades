@@ -23,10 +23,15 @@ class CreateStudentsTable extends Migration
                 $table->float('political');
                 $table->float('history');
                 $table->float('biology');
+                $table->float('geography');
+                $table->float('chemical');
+                $table->float('physical');
                 $table->string('describe', 20);
                 $table->integer('total_points');                        // 总分
                 $table->integer('class_ranking');                       // 班级排名
                 $table->integer('grade_ranking');                       // 年级排名
+                $table->string('stu_name', 15);
+                $table->string('exam_no', '20');
                 $table->timestamps();
             });
         }
