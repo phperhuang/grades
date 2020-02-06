@@ -12,9 +12,9 @@
 */
 
 Route::get('/', function () {
-//    redirect('user/login');
+    redirect('user/login');
 //    return view('welcome');
-    echo 123;
+//    echo 123;
 });
 
 
