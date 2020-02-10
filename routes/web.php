@@ -58,6 +58,11 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('upload_excel_stu_grades', 'User\UserController@uploadExcelStuGrades');
     Route::post('get_ten_students', 'User\UserController@getTenStudents');
     Route::post('get_student_grades', 'User\UserController@getStudentGrades');
+    Route::get('get_student_all_grades', 'User\UserController@getStudentAllGrades');
+
+    // 导出德智体美表
+    Route::get('dztm_index', 'User\UserController@dztmIndex');
+    Route::post('expload_dztm', 'User\UserController@exploadDZTM');
 
 
 });

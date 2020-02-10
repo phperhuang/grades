@@ -13,21 +13,6 @@
         }
     </style>
 
-    {{--<form action="" method="post" enctype="multipart/form-data">--}}
-        {{--<span>导入学生成绩</span>--}}
-        {{--<input type="file" name="stu_grade" />--}}
-
-    {{--</form>--}}
-        {{--<div class="layui-form-item">--}}
-            {{--<label class="layui-form-label">选择班级</label>--}}
-            {{--<div class="layui-input-block" style="width: 200px;">--}}
-                {{--<select name="class_no">--}}
-                    {{--<option>--请选择班级--</option>--}}
-                    {{--<option value="">123</option>--}}
-                {{--</select>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-
     <div class="row mt">
         <div class="col-lg-12">
             <div class="form-panel">
@@ -96,17 +81,19 @@
             <th>生物</th><th>物理</th><th>化学</th><th>总分</th><th>班级排名</th><th>年级排名</th>
         </thead>
         <tbody>
-            @foreach($students_grades as $students)
-                <tr>
-                    <td>{{ $students->stu_name }}</td><td>{{ $students->chinese }}</td>
-                    <td>{{ $students->math }}</td><td>{{ $students->english }}</td>
-                    <td>{{ $students->political }}</td><td>{{ $students->history }}</td>
-                    <td>{{ $students->geography }}</td><td>{{ $students->biology }}</td>
-                    <td>{{ $students->chemical }}</td><td>{{ $students->physical }}</td>
-                    <td>{{ $students->total_points }}</td><td>{{ $students->class_ranking }}</td>
-                    <td>{{ $students->grade_ranking }}</td>
-                </tr>
-            @endforeach
+            @if($students_grades !== '')
+                @foreach($students_grades as $students)
+                    <tr>
+                        <td>{{ $students->stu_name }}</td><td>{{ $students->chinese }}</td>
+                        <td>{{ $students->math }}</td><td>{{ $students->english }}</td>
+                        <td>{{ $students->political }}</td><td>{{ $students->history }}</td>
+                        <td>{{ $students->geography }}</td><td>{{ $students->biology }}</td>
+                        <td>{{ $students->chemical }}</td><td>{{ $students->physical }}</td>
+                        <td>{{ $students->total_points }}</td><td>{{ $students->class_ranking }}</td>
+                        <td>{{ $students->grade_ranking }}</td>
+                    </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
 
