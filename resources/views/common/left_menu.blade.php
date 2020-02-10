@@ -40,6 +40,24 @@
                     <span>学生成绩</span>
                 </a>
             </li>
+            <li class="sub-menu">
+                <a href="{{ url('user/get_student_all_grades') }}">
+                    <i class="fa fa-th"></i>
+                    <span>学生变化表</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="{{ url('user/dztm_index') }}">
+                    <i class="fa fa-th"></i>
+                    <span>导出德智体美表</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="{{ url('user/expload_dztm') }}">
+                    <i class="fa fa-th"></i>
+                    <span>导出德智体美表123</span>
+                </a>
+            </li>
         </ul>
         <!-- sidebar menu end-->
     </div>
