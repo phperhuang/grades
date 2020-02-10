@@ -53,7 +53,7 @@
                 </a>
             </li>
             <li class="sub-menu">
-                <a href="{{ url('user/expload_dztm') }}">
+                <a href="{{ url('user/expload_dztmx') }}">
                     <i class="fa fa-th"></i>
                     <span>导出德智体美表123</span>
                 </a>

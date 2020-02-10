@@ -1,6 +1,11 @@
 @include('.common.head')
 @include('.common.left_menu')
 
+<?php
+    if(session()->get())
+
+?>
+
 {{--<!-- 右侧内容 -->--}}
 {{--<div class="layui-body layui-form">--}}
     {{--<div class="layui-tab mag0" lay-filter="bodyTab" id="top_tabs_box">--}}

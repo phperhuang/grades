@@ -629,6 +629,7 @@ class UserController extends Controller
     {
         // 学生姓名，考试描述，各科成绩，总分，排名
 
+
         return view('user/stu_grade/get_student_all_grades');
 
     }
@@ -650,20 +651,270 @@ class UserController extends Controller
             'students_grades' => $student_grades]);
     }
 
-//    public function exploadDZTM(Request $request)
-//    {
-//        $spreadsheet = new Spreadsheet();
-//        $sheet = $spreadsheet->getActiveSheet();
-//        //设置sheet的名字  两种方法
-//        $spreadsheet->getActiveSheet()->setTitle('德智体美表');
-//        // 获取到填入的表格的信息
-//        set_time_limit(0);
-//        $class_no = $request->input('class_no');
-//        $describe = $request->input('describe');
-//        $excelFile = $request->file('upload_file');
-//        $level = $request->input('level');
-//        $objRead = IOFactory::createReader('Xlsx');
+    public function exploadDZTM(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        //设置sheet的名字  两种方法
+        $spreadsheet->getActiveSheet()->setTitle('德智体美表');
+        // 获取到填入的表格的信息
+        set_time_limit(0);
+        $class_no = $request->input('class_no');
+        $describe = $request->input('describe');
+        $excelFile = $request->file('upload_file');
+        $level = $request->input('level');
+        $objRead = IOFactory::createReader('Xlsx');
+
+        if(!$objRead->canRead($excelFile)){
+            $objRead = IOFactory::createReader('Xls');
+            if(!$objRead->canRead($excelFile)){
+                return "只支持导入.xlsx 和 .xls 格式的 excel 文件";
+            }
+        }
+
+        $objRead->setReadDataOnly(true);
+        $excel = $objRead->load($excelFile);
+        $currSheet = $excel->getSheet(0);
+
+        $columnCnt = 0;
+        if (0 == $columnCnt) {
+            /* 取得最大的列号 */
+            $columnH = $currSheet->getHighestColumn();
+            /* 兼容原逻辑，循环时使用的是小于等于 */
+            $columnCnt = Coordinate::columnIndexFromString($columnH);
+        }
+
+        $rowCnt = $currSheet->getHighestRow();
+//        $headData = [];
+        $data   = [];
+        $rowCntNum = $rowCnt - 2;
+        /* 读取内容 */
+        // 读取首部公共部分
+//        for ($_row = 1; $_row <= 2; $_row++) {
+//            $isNull = true;
+//            for ($_column = 1; $_column <= $columnCnt; $_column++) {
+//                $cellName = Coordinate::stringFromColumnIndex($_column);
+//                $cellId   = $cellName . $_row;
+//                $cell     = $currSheet->getCell($cellId);
 //
+//                if (isset($options['format'])) {
+//                    /* 获取格式 */
+//                    $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+//                    /* 记录格式 */
+//                    $options['format'][$_row][$cellName] = $format;
+//                }
+//
+//                if (isset($options['formula'])) {
+//                    /* 获取公式，公式均为=号开头数据 */
+//                    $formula = $currSheet->getCell($cellId)->getValue();
+//
+//                    if (0 === strpos($formula, '=')) {
+//                        $options['formula'][$cellName . $_row] = $formula;
+//                    }
+//                }
+//
+//                if (isset($format) && 'm/d/yyyy' == $format) {
+//                    /* 日期格式翻转处理 */
+//                    $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
+//                }
+//
+//                $headData[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
+//
+//                if (!empty($headData[$_row][$cellName])) {
+//                    $isNull = false;
+//                }
+//            }
+//
+//            /* 判断是否整行数据为空，是的话删除该行数据 */
+//            if ($isNull) {
+//                unset($headData[$_row]);
+//            }
+//        }
+        for ($_row = 1; $_row <= $rowCnt; $_row++) {
+            $isNull = true;
+            for ($_column = 1; $_column <= $columnCnt; $_column++) {
+                $cellName = Coordinate::stringFromColumnIndex($_column);
+                $cellId   = $cellName . $_row;
+                $cell     = $currSheet->getCell($cellId);
+
+                if (isset($options['format'])) {
+                    /* 获取格式 */
+                    $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+                    /* 记录格式 */
+                    $options['format'][$_row][$cellName] = $format;
+                }
+
+                if (isset($options['formula'])) {
+                    /* 获取公式，公式均为=号开头数据 */
+                    $formula = $currSheet->getCell($cellId)->getValue();
+
+                    if (0 === strpos($formula, '=')) {
+                        $options['formula'][$cellName . $_row] = $formula;
+                    }
+                }
+
+                if (isset($format) && 'm/d/yyyy' == $format) {
+                    /* 日期格式翻转处理 */
+                    $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
+                }
+
+                $data[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
+
+                if (!empty($data[$_row][$cellName])) {
+                    $isNull = false;
+                }
+            }
+
+            /* 判断是否整行数据为空，是的话删除该行数据 */
+            if ($isNull) {
+                unset($data[$_row]);
+            }
+        }
+
+        $zm = 65;
+        $select = ['chinese', 'math', 'english', 'political', 'history', 'biology', 'geography', 'chemical', 'physical', 'total_points', 'class_ranking', 'grade_ranking'];
+//        for ($i = 3; $i <= $rowCnt; $i++){
+//            if($i == 1){
+//                $sheet->setCellValue('A'.$i, $data[$i]['A']);
+//            }else{
+//                $zm_in = strtoupper(chr($zm));
+//                if($i == 2){
+////                    foreach ($data[$i] as $value) {
+////                        $sheet->setCellValue($zm_in . $i, $value);
+////                        $zm_in++;
+////                    }
+////                    $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
+//                }else{
+//                    // 1.拿到姓名，然后查询数据库，再将查到的数据，替换进去
+//                    $student_grades = DB::table('students')->where('stu_name', $data[$i]['C'])
+//                    ->where('class', $class_no)->where('describe', $describe)->select($select)->first();
+//                    $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
+//                    $sheet->setCellValue($zm_in.$i, $data[$i]['B']);
+//                    $sheet->setCellValue($zm_in.$i, $data[$i]['C']);
+//                    $sheet->setCellValue($zm_in.$i, $student_grades->chinese);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->math);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->english);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->political);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->history);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->total_points);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->grade_ranking);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->class_ranking);
+////                    if($level == 1){
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
+////                    }else if($level == 2){
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
+////                    }else{
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->physical);
+////                    }
+//                }
+//                $zm++;
+//            }
+//        }
+
+//        for ($i = 3; $i <= $rowCnt; $i++){
+//            $zm_in = strtoupper(chr($zm));
+//            // 1.拿到姓名，然后查询数据库，再将查到的数据，替换进去
+//            $student_grades = DB::table('students')->where('stu_name', $data[$i]['C'])
+//                ->where('class', $class_no)->where('describe', $describe)->select($select)->first();
+//            if($student_grades != ''){
+//                $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
+//                $sheet->setCellValue($zm_in.$i, $data[$i]['B']);
+//                $sheet->setCellValue($zm_in.$i, $data[$i]['C']);
+//                $sheet->setCellValue($zm_in.$i, $student_grades->chinese);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->math);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->english);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->political);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->history);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->total_points);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->grade_ranking);
+////                    $sheet->setCellValue($zm_in.$i, $student_grades->class_ranking);
+////                    if($level == 1){
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
+////                    }else if($level == 2){
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
+////                    }else{
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
+////                        $sheet->setCellValue($zm_in.$i, $student_grades->physical);
+////                    }
+//            }
+////
+//            $zm++;
+////            var_dump($student_grades);
+//        }
+
+
+        $file_name = date('Y-m-d', time()).rand(1000, 9999);
+        $file_name = $file_name . ".xlsx";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file_name.'"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+
+    }
+
+
+    public function exploadDZTMX(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        //设置sheet的名字  两种方法
+        $spreadsheet->getActiveSheet()->setTitle('Hello');
+        //设置第一行小标题
+        $k = 1;
+        $sheet->setCellValue('A'.$k, '商品名称');
+        $sheet->setCellValue('B'.$k, '价格');
+        $sheet->setCellValue('C'.$k, '分类');
+        $sheet->setCellValue('D'.$k, '描述');
+        $info = array(
+            ['goods_name'=>'内衣','price'=>'11','category'=>'性感内衣','desc'=>'1111'],
+            ['goods_name'=>'裙子','price'=>'80','category'=>'齐B短裙','desc'=>'1111'],
+            ['goods_name'=>'裤子','price'=>'60','category'=>'七分裤','desc'=>'1111'],
+            ['goods_name'=>'袜子','price'=>'70','category'=>'连体丝袜','desc'=>'1111']
+        );
+        $k = 2;
+        foreach ($info as $key => $value) {
+            $sheet->setCellValue('A' . $k, $value['goods_name']);
+            $sheet->setCellValue('B' . $k, $value['price']);
+            $sheet->setCellValue('C' . $k, $value['category']);
+            $sheet->setCellValue('D' . $k, $value['desc']);
+            $k++;
+        }
+        $file_name = date('Y-m-d', time()).rand(1000, 9999);
+        $file_name = $file_name . ".xlsx";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file_name.'"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+    }
+
+    public function downloadDZTM(Request $request)
+    {
+        $class_no = $request->input('class_no');
+        $describe = $request->input('describe');
+        $file = $excelFile = $request->file('upload_file');
+        $level = $request->input('level');
+        if($excelFile){
+            $realPath = $file;
+//			$path = $file -> move(app_path().'/storage/uploads');
+			$realPath = $file->getRealPath();
+			$entension =  $file -> getClientOriginalExtension(); //上传文件的后缀.
+//			$tabl_name = date('YmdHis').mt_rand(100,999);
+			$tabl_name = '111112';
+			$newName = $tabl_name.'.'.'Xlsx';//$entension;
+			$path = $file->move(base_path().'/uploads',$newName);
+			$cretae_path = base_path().'/uploads/'.$newName;
+
+        }
+//        $objRead = IOFactory::createReader('Xlsx');
 //        if(!$objRead->canRead($excelFile)){
 //            $objRead = IOFactory::createReader('Xls');
 //            if(!$objRead->canRead($excelFile)){
@@ -770,161 +1021,10 @@ class UserController extends Controller
 //            }
 //        }
 //
-////        echo $rowCntNum;
-////        var_dump($data[2]['A']);
-////        exit;
-//
-//        $zm = 65;
-//        $select = ['chinese', 'math', 'english', 'political', 'history', 'biology', 'geography', 'chemical', 'physical', 'total_points', 'class_ranking', 'grade_ranking'];
-////        for ($i = 3; $i <= $rowCnt; $i++){
-////            if($i == 1){
-////                $sheet->setCellValue('A'.$i, $data[$i]['A']);
-////            }else{
-////                $zm_in = strtoupper(chr($zm));
-////                if($i == 2){
-//////                    foreach ($data[$i] as $value) {
-//////                        $sheet->setCellValue($zm_in . $i, $value);
-//////                        $zm_in++;
-//////                    }
-//////                    $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
-////                }else{
-////                    // 1.拿到姓名，然后查询数据库，再将查到的数据，替换进去
-////                    $student_grades = DB::table('students')->where('stu_name', $data[$i]['C'])
-////                    ->where('class', $class_no)->where('describe', $describe)->select($select)->first();
-////                    $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
-////                    $sheet->setCellValue($zm_in.$i, $data[$i]['B']);
-////                    $sheet->setCellValue($zm_in.$i, $data[$i]['C']);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->chinese);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->math);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->english);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->political);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->history);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->total_points);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->grade_ranking);
-//////                    $sheet->setCellValue($zm_in.$i, $student_grades->class_ranking);
-//////                    if($level == 1){
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
-//////                    }else if($level == 2){
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
-//////                    }else{
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
-//////                        $sheet->setCellValue($zm_in.$i, $student_grades->physical);
-//////                    }
-////                }
-////                $zm++;
-////            }
-////        }
-//
-//        for ($i = 3; $i <= $rowCnt; $i++){
-//            $zm_in = strtoupper(chr($zm));
-//            // 1.拿到姓名，然后查询数据库，再将查到的数据，替换进去
-//            $student_grades = DB::table('students')->where('stu_name', $data[$i]['C'])
-//                ->where('class', $class_no)->where('describe', $describe)->select($select)->first();
-//            if($student_grades != ''){
-//                $sheet->setCellValue($zm_in.$i, $data[$i]['A']);
-//                $sheet->setCellValue($zm_in.$i, $data[$i]['B']);
-//                $sheet->setCellValue($zm_in.$i, $data[$i]['C']);
-//                $sheet->setCellValue($zm_in.$i, $student_grades->chinese);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->math);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->english);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->political);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->history);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->total_points);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->grade_ranking);
-////                    $sheet->setCellValue($zm_in.$i, $student_grades->class_ranking);
-////                    if($level == 1){
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
-////                    }else if($level == 2){
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->geography);
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->biology);
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
-////                    }else{
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->chemical);
-////                        $sheet->setCellValue($zm_in.$i, $student_grades->physical);
-////                    }
-//            }
-////
-//            $zm++;
-////            var_dump($student_grades);
-//        }
-//
-////        exit;
-//
-////        //设置第一行小标题
-////        $k = 1;
-////        $sheet->setCellValue('A'.$k, '商品名称');
-////        $sheet->setCellValue('B'.$k, '价格');
-////        $sheet->setCellValue('C'.$k, '分类');
-////        $sheet->setCellValue('D'.$k, '描述');
-////        $info = array(
-////            ['goods_name'=>'内衣','price'=>'11','category'=>'性感内衣','desc'=>'1111'],
-////            ['goods_name'=>'裙子','price'=>'80','category'=>'齐B短裙','desc'=>'1111'],
-////            ['goods_name'=>'裤子','price'=>'60','category'=>'七分裤','desc'=>'1111'],
-////            ['goods_name'=>'袜子','price'=>'70','category'=>'连体丝袜','desc'=>'1111']
-////        );
-////        $k = 2;
-////        foreach ($info as $key => $value) {
-////            $sheet->setCellValue('A' . $k, $value['goods_name']);
-////            $sheet->setCellValue('B' . $k, $value['price']);
-////            $sheet->setCellValue('C' . $k, $value['category']);
-////            $sheet->setCellValue('D' . $k, $value['desc']);
-////            $k++;
-////        }
-//
-//
-//        $file_name = date('Y-m-d', time()).rand(1000, 9999);
-//        $file_name = $file_name . ".xlsx";
-//        header('Content-Type: application/vnd.ms-excel');
-//        header('Content-Disposition: attachment;filename="'.$file_name.'"');
-//        header('Cache-Control: max-age=0');
-//        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-//        $writer->save('php://output');
-//
-//    }
+//        var_dump($data);
 
-    public function exploadDZTM(Request $request)
-    {
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-//        //设置sheet的名字  两种方法
-        $spreadsheet->getActiveSheet()->setTitle('德智体美表');
-        //设置第一行小标题
-        $k = 1;
-        $sheet->setCellValue('A'.$k, '商品名称');
-        $sheet->setCellValue('B'.$k, '价格');
-        $sheet->setCellValue('C'.$k, '分类');
-        $sheet->setCellValue('D'.$k, '描述');
-        $info = array(
-            ['goods_name'=>'内衣','price'=>'11','category'=>'性感内衣','desc'=>'1111'],
-            ['goods_name'=>'裙子','price'=>'80','category'=>'齐B短裙','desc'=>'1111'],
-            ['goods_name'=>'裤子','price'=>'60','category'=>'七分裤','desc'=>'1111'],
-            ['goods_name'=>'袜子','price'=>'70','category'=>'连体丝袜','desc'=>'1111']
-        );
-        $k = 2;
-        foreach ($info as $key => $value) {
-            $sheet->setCellValue('A' . $k, $value['goods_name']);
-            $sheet->setCellValue('B' . $k, $value['price']);
-            $sheet->setCellValue('C' . $k, $value['category']);
-            $sheet->setCellValue('D' . $k, $value['desc']);
-            $k++;
-        }
-
-        $file_name = date('Y-m-d', time()).rand(1000, 9999);
-        $file_name = $file_name . ".xlsx";
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'.$file_name.'"');
-        header('Cache-Control: max-age=0');
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save('php://output');
-//        echo file_get_contents($file_name);
 
     }
-
 
 
 }
