@@ -921,7 +921,7 @@ class UserController extends Controller
         header('Cache-Control: max-age=0');
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        echo file_get_contents($file_name);
+//        echo file_get_contents($file_name);
 
     }
 
