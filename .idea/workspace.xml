@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22fecb44-221b-4af6-9982-2fc7d578bc97" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/common/left_menu.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/common/left_menu.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/user/stu_grade/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/user/stu_grade/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/User/UserController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="921" column="41" selection-start-line="921" selection-start-column="41" selection-end-line="921" selection-end-column="41" />
+            <state relative-caret-position="593">
+              <caret line="924" lean-forward="true" selection-start-line="924" selection-end-line="924" />
               <folding>
                 <element signature="e#45#63#0#PHP" expanded="true" />
                 <element signature="e#4519#8559#0#PHP" />
@@ -489,12 +485,12 @@
       <workItem from="1580178068001" duration="12827000" />
       <workItem from="1580263750636" duration="51290000" />
       <workItem from="1580699995294" duration="11220000" />
-      <workItem from="1580991720355" duration="34813000" />
+      <workItem from="1580991720355" duration="35172000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="292525000" />
+    <option name="totallyTimeSpent" value="292884000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -509,7 +505,7 @@
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21268657" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21268657" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -873,8 +869,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/User/UserController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="921" column="41" selection-start-line="921" selection-start-column="41" selection-end-line="921" selection-end-column="41" />
+        <state relative-caret-position="593">
+          <caret line="924" lean-forward="true" selection-start-line="924" selection-end-line="924" />
           <folding>
             <element signature="e#45#63#0#PHP" expanded="true" />
             <element signature="e#4519#8559#0#PHP" />
