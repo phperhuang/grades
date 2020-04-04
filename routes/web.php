@@ -11,10 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-//    redirect('user/login');
-//    return view('welcome');
-    echo 123;
+//Route::get('/', function () {
+////    redirect('user/login');
+////    return view('welcome');
+//    echo 123;
+//});
+Route::get('/', function (){
+    return view('user/auth/login');
 });
 
 
@@ -62,7 +65,9 @@ Route::group(['prefix' => 'user'], function () {
 
     // 导出德智体美表
     Route::get('dztm_index', 'User\UserController@dztmIndex');
-    Route::post('expload_dztm', 'User\UserController@exploadDZTM');
+    Route::post('expload_dztm', 'User\UserController@downloadDZTM');
+//    Route::post('expload_dztm', 'User\UserController@exploadDZTM');
+    Route::get('expload_dztmx', 'User\UserController@exploadDZTMX');
 
 
 });
