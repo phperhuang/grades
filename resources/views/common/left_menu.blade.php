@@ -53,9 +53,21 @@
                 </a>
             </li>
             <li class="sub-menu">
-                <a href="{{ url('user/expload_dztmx') }}">
+                <a href="{{ url('user/show_student_all_grades') }}">
                     <i class="fa fa-th"></i>
                     <span>导出德智体美表123</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="{{ url('user/get_progress_ten') }}">
+                    <i class="fa fa-th"></i>
+                    <span>进步前十的学生</span>
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="{{ url('user/show_progress_ten') }}">
+                    <i class="fa fa-th"></i>
+                    <span>进步前十的学生123</span>
                 </a>
             </li>
         </ul>

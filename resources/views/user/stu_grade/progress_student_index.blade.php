@@ -2,7 +2,6 @@
 
 
 @section('content')
-
     <style type="text/css">
         .layui-edge {
             display: none;
@@ -15,21 +14,27 @@
             margin-bottom: 50px;!important;
         }
     </style>
-    {{--{{ var_dump($test_describe) }}--}}
+{{--    {{ var_dump($test_describe) }}--}}
     <div class="row mt">
         <div class="col-lg-12">
             <div class="form-panel">
                 <div class="form-group">
-                    {{--<select style="display: inline-block; width: 200px;" class="form-control" name="show_grade_describe" id="show_grade_describe">--}}
-                        {{--<option value="">--请选择考试--</option>--}}
-                        {{--@foreach($test_describe as $describe)--}}
-                            {{--<option value="{{ $describe }}">{{ $describe }}</option>--}}
-                        {{--@endforeach--}}
-                    {{--</select>--}}
+                    <select style="display: inline-block; width: 200px;" class="form-control" name="show_grade_describe" id="first_describe">
+                    <option value="">--请选择上次考试--</option>
+                    @foreach($test_describe as $describe)
+                        <option value="{{ $describe['describe'] }}">{{ $describe['describe'] }}</option>
+                    @endforeach
+                    </select>
+                    <select style="display: inline-block; width: 200px;" class="form-control" name="show_grade_describe" id="last_describe">
+                        <option value="">--请选择此次考试--</option>
+                        @foreach($test_describe as $describe)
+                            <option value="{{ $describe['describe'] }}">{{ $describe['describe'] }}</option>
+                        @endforeach
+                    </select>
                     <select style="display: inline-block; width: 200px;" class="form-control" name="ten_class" id="ten_class">
                         <option value="">--请选择班级--</option>
                         @foreach($class_info as $cInfo)
-                            <option value="{{ $cInfo }}">{{ $cInfo }}</option>
+                            <option value="{{ $cInfo['class_no'] }}">{{ $cInfo['class_no'] }}</option>
                         @endforeach
                     </select>
                     <button id="show_stu_grades" style="margin-top: -4px; margin-left: 20px;" type="button" class="btn btn-primary">
@@ -43,17 +48,13 @@
         <!-- /col-lg-12 -->
     </div>
 
-    {{--<table class="table table-hover" id="show_student_grades">--}}
-        {{--<thead>--}}
-        {{--<th>姓名</th><th>学期</th><th>时间</th><th>班级排名</th><th>年级排名</th><th>语文</th><th>数学</th><th>英语</th>--}}
-        {{--<th>政治</th><th>物理</th><th>历史</th><th>地理</th><th>生物</th><th>化学</th><th>总分</th>--}}
-        {{--</thead>--}}
-        {{--<tbody>--}}
-        {{--</tbody>--}}
-    {{--</table>--}}
-    <div class="show_change_grades">
-
-    </div>
+    <table class="table table-hover" id="show_student_progress">
+    <thead>
+    <th>姓名</th><th>上次排名</th><th>此次排名</th><th>进步名词</th>
+    </thead>
+    <tbody>
+    </tbody>
+    </table>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -90,8 +91,10 @@
         $(function () {
             $('#show_stu_grades').on('click', function () {
                 let class_no = $('#ten_class option:selected').text();
-                let prams = {"class_no" : class_no, '_token' : "{{ csrf_token() }}"}
-                showStudentAllGrades("{{ url('user/show_student_all_grades') }}", prams, $('.show_change_grades'));
+                let first_describe = $('#first_describe option:selected').text();
+                let last_describe = $('#first_describe option:selected').text();
+                let prams = {"class_no" : class_no, "first_describe" : first_describe, "last_describe" : last_describe,'_token' : "{{ csrf_token() }}"}
+                showStudentProgress("{{ url('user/show_progress_ten') }}", prams, $('#show_student_progress tbody'));
             })
         });
     </script>

@@ -14,10 +14,10 @@
     <div class="row mt">
         <div class="col-lg-12">
             <div class="form-panel">
-                <form action="{{ url('user/expload_dztm') }}" method="post" class="form-horizontal style-form" enctype="multipart/form-data">
+                <form action="{{ url('user/show_dztm') }}" method="get" class="form-horizontal style-form" enctype="multipart/form-data">
                     <input type="hidden" value="{{ csrf_token() }}" name="_token">
                     <div class="form-group">
-                        <label class="control-label col-md-1">上传班级成绩</label>
+                        <label class="control-label col-md-1">上传德智体美表格</label>
                         <div class="col-md-1">
                             <input style="padding-top: 8px;" type="file" name="upload_file" class="default" />
                         </div>

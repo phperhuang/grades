@@ -11,14 +11,15 @@
 |
 */
 
-//Route::get('/', function () {
-////    redirect('user/login');
-////    return view('welcome');
-//    echo 123;
-//});
-Route::get('/', function (){
-    return view('user/auth/login');
+Route::get('/', function () {
+//    redirect('user/login');
+//    return view('welcome');
+    echo 123;
 });
+
+//Route::get('/', function (){
+//    return view('user/auth/login');
+//});
 
 
 Route::group(['prefix' => 'user'], function () {
@@ -62,12 +63,17 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('get_ten_students', 'User\UserController@getTenStudents');
     Route::post('get_student_grades', 'User\UserController@getStudentGrades');
     Route::get('get_student_all_grades', 'User\UserController@getStudentAllGrades');
+    Route::post('show_student_all_grades', 'User\UserController@showStudentAllGrades');
 
     // 导出德智体美表
     Route::get('dztm_index', 'User\UserController@dztmIndex');
     Route::post('expload_dztm', 'User\UserController@downloadDZTM');
 //    Route::post('expload_dztm', 'User\UserController@exploadDZTM');
     Route::get('expload_dztmx', 'User\UserController@exploadDZTMX');
+    Route::get('show_dztm', 'User\UserController@showDZTM');
+
+    Route::get('get_progress_ten', 'User\UserController@getProgressTen');
+    Route::post('show_progress_ten', 'User\UserController@showProgressTen');
 
 
 });

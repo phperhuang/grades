@@ -2,7 +2,7 @@
 @include('.common.left_menu')
 
 <?php
-    if(session()->get())
+//    if(session()->get())
 
 ?>
 

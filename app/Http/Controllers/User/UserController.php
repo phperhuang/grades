@@ -35,6 +35,12 @@ class UserController extends Controller
         return view('user/index/index');
     }
 
+    public function obj2arr($data)
+    {
+        $data = json_decode(json_encode($data, JSON_UNESCAPED_UNICODE), true);
+        return $data;
+    }
+
     public function enteringGrades()
     {
         $class_nos = ClassInfo::orderBy('class_no')->get();
@@ -603,6 +609,7 @@ class UserController extends Controller
                 $gradesData['chemical'] = 0;
                 $gradesData['physical'] = 0;
             }
+            $gradesData['level'] = $level;
             DB::table('students')->insertGetId($gradesData);
         }
         return redirect(url("user/stu_grade"));
@@ -628,11 +635,118 @@ class UserController extends Controller
     public function getStudentAllGrades(Request $request)
     {
         // 学生姓名，考试描述，各科成绩，总分，排名
+        $classInfo = DB::table('class_info')->get('class_no');
+        $test_describe = DB::table('test_describes')->get('describe');
+        $class_arr = [];
+        $describe_arr = [];
+        foreach ($classInfo as $value) {
+            array_push($class_arr, $value->class_no);
+        }
+        foreach ($test_describe as $describe) {
+            array_push($describe_arr, $describe->describe);
+        }
 
-
-        return view('user/stu_grade/get_student_all_grades');
+        return view('user/stu_grade/get_student_all_grades',
+            ['test_describe' => $describe_arr, 'class_info' => $class_arr]);
 
     }
+
+    public function showStudentAllGrades(Request $request)
+    {
+        $select = ['stu_name', 'level', 'describe', 'class_ranking', 'grade_ranking', 'chinese', 'math', 'english',
+            'political', 'chemical', 'history', 'geography', 'biology', 'physical', 'total_points'];
+        $class_no = $request->input('class_no');
+        $student = DB::table('students')->where('class', $class_no)->orderBy('created_at', 'desc')
+            ->select($select)->get()->groupBy('stu_name');
+        $student = json_decode(json_encode($student, JSON_UNESCAPED_UNICODE), true);
+        return $student;
+    }
+
+
+    // 德智体美表，要先将其他信息，录入数据库，再把数据库里成绩表和德智体美表里的数据，全都导入到excel文件即可
+    public function showDZTM(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        //设置sheet的名字  两种方法
+        $spreadsheet->getActiveSheet()->setTitle('Hello');
+        //设置第一行小标题
+        $k = 1;
+        $sheet->setCellValue('A'.$k, '商品名称');
+        $sheet->setCellValue('B'.$k, '价格');
+        $sheet->setCellValue('C'.$k, '分类');
+        $sheet->setCellValue('D'.$k, '描述');
+        $info = array(
+            ['goods_name'=>'内衣','price'=>'11','category'=>'性感内衣','desc'=>'1111'],
+            ['goods_name'=>'裙子','price'=>'80','category'=>'齐B短裙','desc'=>'1111'],
+            ['goods_name'=>'裤子','price'=>'60','category'=>'七分裤','desc'=>'1111'],
+            ['goods_name'=>'袜子','price'=>'70','category'=>'连体丝袜','desc'=>'1111']
+        );
+        $k = 2;
+        foreach ($info as $key => $value) {
+            $sheet->setCellValue('A' . $k, $value['goods_name']);
+            $sheet->setCellValue('B' . $k, $value['price']);
+            $sheet->setCellValue('C' . $k, $value['category']);
+            $sheet->setCellValue('D' . $k, $value['desc']);
+            $k++;
+        }
+        $file_name = date('Y-m-d', time()).rand(1000, 9999);
+        $file_name = $file_name . ".xlsx";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file_name.'"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+    }
+
+
+
+    // 获取进步前十的学生
+    public function getProgressTen(Request $request)
+    {
+        // 展示三个下拉框，选择两次考试以及班级
+
+        $class_info = $this->obj2arr(DB::table('class_info')->get());
+        $test_describe = $this->obj2arr(DB::table('test_describes')->orderBy('created_at', 'desc')->get());
+//        var_dump($test_describe);
+//        exit;
+        return view('user/stu_grade/progress_student_index', ['class_info' => $class_info, 'test_describe' => $test_describe]);
+    }
+
+    public function showProgressTen(Request $request)
+    {
+        $class_no = '1804';
+        $first_describe = '八上12月月考';
+        $last_describe = '八年级上学期期末考试';
+        $select = ['stu_name', 'grade_ranking'];
+        $ranking = [];
+        // 获取 first_describe 的排名以及 last_describe 的排名，以及学生姓名，然后放到数组中相减，再放到一个数组中，再排序即可
+        $first_ranking = $this->obj2arr(DB::table('students')->where('class', $class_no)
+            ->where('describe', $first_describe)->select($select)->get());
+        $last_ranking = $this->obj2arr(DB::table('students')->where('class', $class_no)
+            ->where('describe', $last_describe)->select($select)->get());
+        $i = 0;
+        foreach ($first_ranking as $first_key => $first_value){
+            foreach ($last_ranking as $last_key => $last_value){
+                if($first_value['stu_name'] == $last_value['stu_name']){
+                    $change = $last_value['grade_ranking'] - $first_value['grade_ranking'];
+                    $data = ['stu_name' => $first_value['stu_name'], 'change' => $change,
+                        'first_ranking' => $first_value['grade_ranking'], 'last_ranking' => $last_value['grade_ranking']];
+                    array_push($ranking, $data);
+                }
+            }
+        }
+
+        array_multisort(array_column($ranking, 'change'), SORT_DESC, $ranking);
+        $ranking = array_slice($ranking, 0, 10);
+        return $ranking;
+    }
+
+
+    // 德智体美表的导出方案步骤：
+    // 1.将除了成绩以外的德智体美表的数据导入数据库
+    // 2.如未导入成绩，先将成绩导入进去，再在导出德智体美表页面导出德智体美表
+    // 即将两个数据库的表的信息，都放入一个 excel 表格中即可
 
     public function dztmIndex(Request $request)
     {
@@ -905,13 +1019,13 @@ class UserController extends Controller
         if($excelFile){
             $realPath = $file;
 //			$path = $file -> move(app_path().'/storage/uploads');
-			$realPath = $file->getRealPath();
-			$entension =  $file -> getClientOriginalExtension(); //上传文件的后缀.
+            $realPath = $file->getRealPath();
+            $entension =  $file -> getClientOriginalExtension(); //上传文件的后缀.
 //			$tabl_name = date('YmdHis').mt_rand(100,999);
-			$tabl_name = '111112';
-			$newName = $tabl_name.'.'.'Xlsx';//$entension;
-			$path = $file->move(base_path().'/uploads',$newName);
-			$cretae_path = base_path().'/uploads/'.$newName;
+            $tabl_name = '111112';
+            $newName = $tabl_name.'.'.'Xlsx';//$entension;
+            $path = $file->move(base_path().'/uploads',$newName);
+            $cretae_path = base_path().'/uploads/'.$newName;
 
         }
 //        $objRead = IOFactory::createReader('Xlsx');
