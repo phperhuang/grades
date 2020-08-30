@@ -78,7 +78,7 @@
             <input type="checkbox" name="" title="写作" lay-skin="primary" checked>
             {{--<div style="margin-left: 50px;margin-bottom: 10px;" class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>保持登录7天</span><i class="layui-icon"></i></div>--}}
             <div style="text-align: center;">
-                <input type="submit" class="layui-btn"  value="登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录"/>
+                <input type="submit" id="login" class="layui-btn"  value="登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录"/>
             </div>
         </div>
     </form>
